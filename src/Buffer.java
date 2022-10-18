@@ -18,17 +18,24 @@ public class Buffer extends JFrame implements Runnable {
 
     Semaphore semaphore = new Semaphore(5);
     Semaphore semaphoreProcess = new Semaphore(1);
-    ConsumidorThread consumidorThread = new ConsumidorThread(1, semaphore, semaphoreProcess, this);
-    ConsumidorThread consumidorThread2 = new ConsumidorThread(2, semaphore, semaphoreProcess, this);
-    ProdutorThread produtorThread = new ProdutorThread(1, semaphore, semaphoreProcess, this);
-    ProdutorThread produtorThread2 = new ProdutorThread(2, semaphore, semaphoreProcess, this);
-    ProdutorThread produtorThread3 = new ProdutorThread(3, semaphore, semaphoreProcess, this);
+    ConsumidorThread consumidorThread;
+    ConsumidorThread consumidorThread2;
+    ProdutorThread produtorThread;
+    ProdutorThread produtorThread2;
+    ProdutorThread produtorThread3;
 
     public Buffer() {
         criarComponentes();
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                consumidorThread = new ConsumidorThread(1, semaphore, semaphoreProcess, Buffer.this);
+                consumidorThread2 = new ConsumidorThread(2, semaphore, semaphoreProcess, Buffer.this);
+                produtorThread = new ProdutorThread(1, semaphore, semaphoreProcess, Buffer.this);
+                produtorThread2 = new ProdutorThread(2, semaphore, semaphoreProcess, Buffer.this);
+                produtorThread3 = new ProdutorThread(3, semaphore, semaphoreProcess, Buffer.this);
+
                 consumidorThread.start();
                 consumidorThread2.start();
                 produtorThread.start();
@@ -39,26 +46,35 @@ public class Buffer extends JFrame implements Runnable {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                consumidorThread.stop();
-                consumidorThread2.stop();
-                produtorThread.stop();
-                produtorThread2.stop();
-                produtorThread3.stop();
-
-                atualizarProdutorParado(1);
-                atualizarProdutorParado(2);
-                atualizarProdutorParado(3);
-                atualizarConsumidorParado(1);
-                atualizarConsumidorParado(2);
+                consumidorThread.setEmProducao(false);
+                consumidorThread2.setEmProducao(false);
+                produtorThread.setEmProducao(false);
+                produtorThread2.setEmProducao(false);
+                produtorThread3.setEmProducao(false);
             }
         });
     }
 
-    public void atualizarProdutor(int idProdutor) {
+    public void atualizarProducao(int idProdutor) {
         switch (idProdutor) {
-            case 1 -> produtor1.setText("Produtor 1 produziu!");
-            case 2 -> produtor2.setText("Produtor 2 produziu!");
-            case 3 -> produtor3.setText("Produtor 3 produziu!");
+            case 1 -> produtor1.setText("Produtor 1 produzindo!");
+            case 2 -> produtor2.setText("Produtor 2 produzindo!");
+            case 3 -> produtor3.setText("Produtor 3 produzindo!");
+        }
+    }
+
+    public void atualizarConsumo(int idConsumidor) {
+        switch (idConsumidor) {
+            case 1 -> consumidor1.setText("Consumidor 1 consumindo!");
+            case 2 -> consumidor2.setText("Consumidor 2 consumindo!");
+        }
+    }
+
+    public void atualizarProdutor(int idProdutor, int numero) {
+        switch (idProdutor) {
+            case 1 -> produtor1.setText("Produtor 1 produziu " + numero);
+            case 2 -> produtor2.setText("Produtor 2 produziu " + numero);
+            case 3 -> produtor3.setText("Produtor 3 produziu " + numero);
         }
         atualizarBuffer();
     }
